@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>等比数列の和の公式とその応用</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* 基本的なページスタイル */
+        body { font-family: sans-serif; line-height: 1.6; margin: 20px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 15px;}
+        h1, h2, h3, h4, h5, h6 { margin-top: 1.5em; margin-bottom: 0.5em; }
+        h1 { border-bottom: 2px solid #005ab3; padding-bottom: 0.3em; } /* 単元名用 */
+        h2 { border-bottom: 1px solid #ccc; padding-bottom: 0.2em; }
+        p { margin-bottom: 1em; }
+        ul, ol { margin-bottom: 1em; padding-left: 2em; }
+        pre { background-color: #f4f4f4; padding: 10px; border: 1px solid #ddd; border-radius: 4px; overflow-x: auto; font-size: 0.95em; white-space: pre-wrap; word-wrap: break-word; }
+        code { font-family: monospace; background-color: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; }
+        pre code { background-color: transparent; padding: 0; border-radius: 0; white-space: inherit; }
+        blockquote { border-left: 4px solid #ccc; padding: 0.5em 1em; margin-left: 0; color: #555; background-color: #f9f9f9; }
+        details { margin-bottom: 1em; border: 1px solid #ccc; border-radius: 4px; }
+        summary { font-weight: bold; padding: 0.5em 1em; background-color: #f9f9f9; cursor: pointer; border-radius: 4px 4px 0 0; position: relative; /* アイコン配置用 */ }
+        details[open] > summary { border-bottom: 1px solid #ccc; }
+        details > *:not(summary) { padding: 1em; border-top: 1px solid #eee; overflow-wrap: break-word; word-wrap: break-word; overflow-x: auto; }
+        mjx-container[jax="SVG"], mjx-container[jax="CHTML"] { overflow-x: auto; max-width: 100%; }
+        img { max-width: 100%; height: auto; display: block; margin: 1em auto; border: 1px solid #ddd; padding: 3px; border-radius: 4px;}
+        a { color: #005ab3; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 1em;}
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+
+        /* 各セクションのスタイル */
+        .definition, .theorem, .example, .practice-problems, .tips, .supplement, .important, .caution, .summary, .quiz, .formula-guide {
+            margin-top: 1.5em; margin-bottom: 1.5em; padding: 1em 1.5em; border-radius: 5px; border-left-width: 5px; border-left-style: solid; position: relative; padding-left: 2.5em; /* アイコンスペース確保 */
+        }
+        /* アイコン共通スタイル */
+        .definition::before, .theorem::before, .example::before, .practice-problems::before, .tips::before, .supplement::before, .important::before, .caution::before, .summary::before, .quiz::before, .formula-guide::before {
+            position: absolute; left: 1em; top: 0.9em; /* 位置調整 */ font-size: 1.1em; width: 1.5em; /* アイコン幅 */ text-align: center;
+        }
+        /* 個別アイコン設定 */
+        .definition::before { content: '📖'; }
+        .theorem::before { content: '📜'; }
+        .example::before { content: '✍️'; }
+        .practice-problems::before { content: '✏️'; }
+        .tips::before { content: '💡'; }
+        .supplement::before { content: '➕'; }
+        .important::before { content: '⭐'; }
+        .caution::before { content: '⚠️'; }
+        .summary::before { content: '🔖'; }
+        .quiz::before { content: '❓'; } /* クイズ用アイコン例 */
+        .formula-guide::before { content: '🧭'; } /* ガイド用アイコン例 */
+
+        /* 各セクションの背景色・ボーダー色 */
+        .definition { background-color: #e0f7fa; border-left-color: #00bcd4; }
+        .theorem { background-color: #e8f5e9; border-left-color: #4caf50; }
+        .example { background-color: #fff3e0; border-left-color: #ff9800; }
+        .practice-problems { background-color: #fce4ec; border-left-color: #e91e63; }
+        .tips { background-color: #fffde7; border-left-color: #ffeb3b; }
+        .supplement { background-color: #f3e5f5; border-left-color: #9c27b0; }
+        .important { background-color: #ffebee; border-left-color: #f44336; font-weight: bold; }
+        .caution { background-color: #ffebee; border-left-color: #f44336; }
+        .summary { background-color: #e3f2fd; border-left-color: #2196f3; }
+        .quiz { background-color: #e8eaf6; border-left-color: #3f51b5; }
+        .formula-guide { background-color: #e0f2f1; border-left-color: #009688; }
+
+        /* ツールチップ */
+        .tooltip { position: relative; border-bottom: 1px dotted black; cursor: help; }
+        .tooltip::after { content: attr(data-tooltip); position: absolute; left: 50%; transform: translateX(-50%); bottom: 130%; background-color: rgba(0, 0, 0, 0.85); color: white; padding: 6px 10px; border-radius: 4px; font-size: 0.9em; white-space: nowrap; visibility: hidden; opacity: 0; transition: opacity 0.3s, visibility 0.3s; z-index: 100; pointer-events: none; }
+        .tooltip:hover::after { visibility: visible; opacity: 1; }
+
+        /* 難易度・重要度 */
+        .difficulty, .importance { display: inline-block; font-size: 0.85em; padding: 0.1em 0.5em; margin-left: 0.5em; border-radius: 3px; vertical-align: middle; }
+        .difficulty { background-color: #eee; color: #333; }
+        .importance { background-color: #ffeb3b; color: #5f4c00; } /* 重要度用: 黄色地に濃い文字 */
+
+        /* クイズ用 */
+        .quiz ol { list-style-type: none; padding-left: 0; }
+        .quiz li { margin-bottom: 0.5em; }
+
+        /* 使い分けガイド用 */
+        .formula-guide ul { list-style-type: none; padding-left: 0; }
+        .formula-guide li { margin-bottom: 1em; border-bottom: 1px dashed #ccc; padding-bottom: 1em; }
+        .formula-guide strong { display: block; margin-bottom: 0.5em; font-size: 1.1em; }
+
+        /* 目次トグル用 */
+        .toc-toggle { border: 1px solid #ccc; border-radius: 4px; margin-bottom: 1.5em; background-color: #f9f9f9; }
+        .toc-toggle summary { padding: 0.8em 1em; cursor: pointer; font-weight: bold; background-color: transparent; border-radius: 4px; margin: 0; }
+        details[open].toc-toggle > summary { border-bottom: 1px solid #ccc; border-radius: 4px 4px 0 0; }
+        .toc-toggle summary h2 { display: inline; margin: 0; border: none; padding: 0; font-size: 1.2em; }
+        .toc-toggle nav { padding: 0 1.5em 1em 1.5em; background-color: white; border-radius: 0 0 4px 4px; }
+        .toc-toggle nav h2 { display: none; } /* nav内の目次タイトルは非表示 */
+        .toc-toggle nav ul { padding-left: 1.5em; } /* 目次リストのインデント調整 */
+        .toc-toggle nav ul ul { padding-left: 1.5em; } /* サブリストのインデント */
+
+    </style>
+</head>
+<body>
+    <h1>等比数列の和の公式とその応用</h1>
+    <p>授業日: 2025年5月27日</p>
+    <p>学習目標:</p>
+    <ul>
+        <li>等比数列の一般項の公式を理解し、適用できるようになる。</li>
+        <li>等比数列の和の公式を理解し、導出過程も説明できるようになる。</li>
+        <li>等比数列の和の公式を様々な問題に応用できるようになる。</li>
+    </ul>
+
+    <details class="toc-toggle">
+        <summary><h2>目次</h2></summary>
+        <nav>
+            <ul>
+                <li><a href="#review-geometric-sequence">前回の復習: 等比数列の一般項</a></li>
+                <li><a href="#sum-of-geometric-sequence">等比数列の和</a>
+                    <ul>
+                        <li><a href="#formula-sum-geometric">等比数列の和の公式</a></li>
+                        <li><a href="#derivation-sum-formula">公式の導出方法</a></li>
+                        <li><a href="#example1-sum-geometric">例題1: 等比数列の和の計算</a></li>
+                        <li><a href="#caution-formula-usage">注意点: 公式の使い分けとr=1の場合</a></li>
+                        <li><a href="#practice1-sum-geometric">練習問題1: 等比数列の和</a></li>
+                    </ul>
+                </li>
+                <li><a href="#applications-sum-formula">等比数列の和の公式の応用</a>
+                    <ul>
+                        <li><a href="#example2-application">例題2: 応用問題</a></li>
+                    </ul>
+                </li>
+                <li><a href="#formula-guide-geometric-sequences">公式の使い分けガイド: 等比数列</a></li>
+                <li><a href="#understanding-check-1">理解度チェッククイズ 1</a></li>
+                <li><a href="#summary-today">本日のまとめ</a></li>
+                <li><a href="#standard-practice-problems">標準的な練習問題（追加生成）</a></li>
+                <li><a href="#advanced-practice-problems">発展的な練習問題（追加生成）</a></li>
+            </ul>
+        </nav>
+    </details>
+
+    <h2 id="review-geometric-sequence">前回の復習: 等比数列の一般項 📜</h2>
+    <p>前回の授業では、<span class="tooltip" data-tooltip="隣り合う項の比が常に一定である数列。">等比数列</span>について学習しました。等比数列とは、隣り合う項の比が常に一定である数列のことで、その一定の比を<span class="tooltip" data-tooltip="等比数列において、隣り合う項の比のこと。">公比</span>（こうひ）といいます。</p>
+    <div class="theorem">
+        📜 <span class="importance">★★★</span>
+        <p>初項 \(a\)、公比 \(r\) の等比数列の一般項 \(a_n\) は、次のように表されます。</p>
+        <p>\[ a_n = ar^{n-1} \]</p>
+    </div>
+    <p>本日は、この等比数列の和について学習します。</p>
+
+    <h2 id="sum-of-geometric-sequence">等比数列の和</h2>
+    <p><span class="tooltip" data-tooltip="隣り合う項の差が常に一定である数列。">等差数列</span>の和については既に学習しましたが、等比数列にも和の公式が存在します。</p>
+
+    <h3 id="formula-sum-geometric">等比数列の和の公式 📖</h3>
+    <div class="definition">
+        📖 <span class="importance">★★★</span>
+        <p>初項 \(a\)、公比 \(r\)、項数 \(n\) の等比数列の初項から第 \(n\) 項までの和 \(S_n\) は、次のように表されます。</p>
+        <ul>
+            <li>公比 \(r \neq 1\) のとき:
+                \[ S_n = \frac{a(r^n - 1)}{r-1} = \frac{a(1 - r^n)}{1-r} \]
+            </li>
+            <li>公比 \(r = 1\) のとき:
+                \[ S_n = na \]
+            </li>
+        </ul>
+    </div>
+    <div class="important">
+        ⭐ <span class="importance">★★★</span>
+        <p><strong>公式の使い分け:</strong></p>
+        <p>\(r \neq 1\) の場合の2つの式は、分母が正になるように使い分けると計算ミスを減らせます。</p>
+        <ul>
+            <li>\(r > 1\) のときは、\(\frac{a(r^n - 1)}{r-1}\) を使うと分母が正になります。</li>
+            <li>\(r < 1\) のときは、\(\frac{a(1 - r^n)}{1-r}\) を使うと分母が正になります。</li>
+        </ul>
+        <p><strong>\(r=1\) の場合:</strong></p>
+        <p>公比が1の場合、数列は \(a, a, a, \dots, a\) となり、同じ数が \(n\) 個並ぶだけなので、その和は単純に \(na\) となります。</p>
+    </div>
+
+    <h3 id="derivation-sum-formula">公式の導出方法 💡</h3>
+    <div class="tips">
+        💡 <span class="importance">★★☆</span>
+        <p>等比数列の和の公式 (\(r \neq 1\) の場合) は、次のように導出されます。これは非常に重要な考え方なので、理解しておきましょう。</p>
+        <p>初項 \(a\)、公比 \(r\)、項数 \(n\) の等比数列の和を \(S_n\) とすると、</p>
+        <p>\[ S_n = a + ar + ar^2 + \dots + ar^{n-2} + ar^{n-1} \quad \cdots ① \] </p>
+        <p>この式の両辺に公比 \(r\) を掛けます。</p>
+        <p>\[ rS_n = ar + ar^2 + ar^3 + \dots + ar^{n-1} + ar^n \quad \cdots ② \] </p>
+        <p>次に、①式から②式を引きます（または②式から①式を引きます）。ここでは ② - ① を計算します。</p>
+        <p>
+        \[
+        \begin{array}{rcrccccccc}
+        rS_n & = &     & ar & + & ar^2 & + & \dots & + & ar^{n-1} & + & ar^n \\
+        -) \quad S_n & = & a & + & ar & + & ar^2 & + & \dots & + & ar^{n-1} &  \\
+        \hline
+        (r-1)S_n & = & -a &    &    &      &   &       &   &          & + & ar^n
+        \end{array}
+        \]
+        </p>
+        <p>途中の項はすべて打ち消し合い、最初と最後の項だけが残ります。</p>
+        <p>\[ (r-1)S_n = ar^n - a = a(r^n - 1) \] </p>
+        <p>\(r \neq 1\) なので、両辺を \(r-1\) で割ると、</p>
+        <p>\[ S_n = \frac{a(r^n - 1)}{r-1} \] </p>
+        <p>が得られます。同様に、① - ② を計算すると \(\frac{a(1-r^n)}{1-r}\) が得られます。</p>
+    </div>
+
+    <h3 id="example1-sum-geometric">例題1: 等比数列の和の計算 ✍️ <span class="difficulty">★☆☆</span> <span class="importance">★★★</span></h3>
+    <p>初項 \(3\)、公比 \(2\)、項数 \(5\) の等比数列の和を求めなさい。</p>
+    <details>
+        <summary>解答・解説</summary>
+        <p>\(a=3, r=2, n=5\) です。\(r=2 > 1\) なので、公式 \(S_n = \frac{a(r^n - 1)}{r-1}\) を使います。</p>
+        <p>\[ S_5 = \frac{3(2^5 - 1)}{2-1} = \frac{3(32 - 1)}{1} = 3 \times 31 = 93 \]</p>
+        <p><strong>答え:</strong> 93</p>
+    </details>
+    <div class="caution" id="caution-formula-usage">
+      ⚠️ <h4>注意点: 公式の使い分けとr=1の場合</h4>
+      <p><span class="importance">★★☆</span> 等比数列の和の公式を適用する際には、公比 \(r\) の値に注意が必要です。</p>
+      <ul>
+        <li><strong>\(r=1\) の場合を見落とさない:</strong> 問題文で公比が文字で与えられている場合など、\(r=1\) となる可能性を考慮し忘れると、誤った公式を適用してしまうことがあります。必ず \(r=1\) の場合と \(r \neq 1\) の場合で場合分けして考える習慣をつけましょう。</li>
+        <li><strong>\(r \neq 1\) での公式の選択:</strong> \(\frac{a(r^n-1)}{r-1}\) と \(\frac{a(1-r^n)}{1-r}\) は本質的に同じ式ですが、計算ミスの観点から、分母が正になるように使い分けるのが賢明です。
+            <ul>
+                <li>\(|r|>1\) なら \(\frac{a(r^n-1)}{r-1}\)</li>
+                <li>\(|r|<1\) なら \(\frac{a(1-r^n)}{1-r}\)</li>
+            </ul>
+        </li>
+      </ul>
+    </div>
+
+    <h3 id="practice1-sum-geometric">練習問題1: 等比数列の和 ✏️ <span class="difficulty">★☆☆</span> <span class="importance">★★★</span></h3>
+    <p>教科書 問19、問20を解いてみましょう。</p>
+    <p>（個別の解答は省略しますが、等比数列の和の公式を適用します。）</p>
+
+    <h2 id="applications-sum-formula">等比数列の和の公式の応用</h2>
+    <p>等比数列の和の公式は、初項、公比、項数、そして和のうち3つが分かっていれば、残りの1つを求める問題などに応用できます。</p>
+
+    <h3 id="example2-application">例題2: 応用問題 ✍️ <span class="difficulty">★★☆</span> <span class="importance">★★☆</span></h3>
+    <p>初項 \(x\)、公比 \(2\)、末項 \(48\) の等比数列の和が \(93\) であるとき、初項 \(x\) と項数 \(n\) を求めなさい。（教科書 例題6 改題）</p>
+    <details>
+        <summary>解答・解説</summary>
+        <p>与えられた条件は、初項 \(a=x\)、公比 \(r=2\)、末項 \(l=ar^{n-1}=48\)、和 \(S_n=93\)。</p>
+        <p>まず、末項の公式から、</p>
+        <p>\(x \cdot 2^{n-1} = 48 \quad \cdots ①\)</p>
+        <p>次に、和の公式から (\(r=2 \neq 1\))、</p>
+        <p>\(S_n = \frac{x(2^n - 1)}{2-1} = x(2^n - 1) = 93 \quad \cdots ②\)</p>
+        <p>ここで、②の式は \(x \cdot 2^n - x = 93\) と変形できます。</p>
+        <p>また、①の式から \(x \cdot 2^n \cdot 2^{-1} = 48 \Rightarrow x \cdot 2^n \cdot \frac{1}{2} = 48 \Rightarrow x \cdot 2^n = 96\)。</p>
+        <p>この \(x \cdot 2^n = 96\) を②の変形した式に代入すると、</p>
+        <p>\(96 - x = 93\)</p>
+        <p>\(x = 96 - 93 = 3\)</p>
+        <p>初項 \(x=3\) が求まりました。</p>
+        <p>これを①に代入すると、</p>
+        <p>\(3 \cdot 2^{n-1} = 48\)</p>
+        <p>\(2^{n-1} = \frac{48}{3} = 16\)</p>
+        <p>\(16 = 2^4\) なので、\(2^{n-1} = 2^4\)。</p>
+        <p>指数を比較して、\(n-1 = 4 \Rightarrow n=5\)。</p>
+        <p><strong>答え:</strong> 初項 \(x=3\), 項数 \(n=5\)</p>
+        <p class="supplement"><strong>別解のヒント:</strong> 末項 \(l\) を用いる和の公式 \(S_n = \frac{rl-a}{r-1}\) もありますが、この問題では \(n\) も未知数なので、直接的な利用は少し工夫が必要です。しかし、初項 \(a\) と公比 \(r\) が分かれば、この公式からもアプローチできます。</p>
+    </details>
+
+    <div class="formula-guide" id="formula-guide-geometric-sequences">
+      🧭 <h4>公式の使い分けガイド: 等比数列</h4>
+      <p>等比数列に関する問題を解く際に、どの公式を使うべきか迷うことがあります。以下に状況別のガイドを示します。</p>
+      <ul>
+          <li>
+              <strong>特定の項 (\(a_n\)) を求めたいとき</strong>
+              <p><strong>使う公式:</strong> 一般項の公式 \(a_n = ar^{n-1}\)</p>
+              <p><strong>必要な情報:</strong> 初項 \(a\)、公比 \(r\)、項番号 \(n\)</p>
+          </li>
+          <li>
+              <strong>初項から第 \(n\) 項までの和 (\(S_n\)) を求めたいとき</strong>
+              <p><strong>使う公式:</strong></p>
+                <ul>
+                    <li>\(r \neq 1\) のとき: \(S_n = \frac{a(r^n - 1)}{r-1}\) または \(S_n = \frac{a(1 - r^n)}{1-r}\)</li>
+                    <li>\(r = 1\) のとき: \(S_n = na\)</li>
+                </ul>
+              <p><strong>必要な情報:</strong> 初項 \(a\)、公比 \(r\)、項数 \(n\)</p>
+              <p><strong>ポイント:</strong> \(r \neq 1\) の場合は、分母が正になる方の式を選ぶと計算ミスが減ります。</p>
+          </li>
+          <li>
+              <strong>初項・公比・項数・和・末項のうち、いくつかが未知で残りを求めたいとき</strong>
+              <p><strong>使う公式:</strong> 一般項の公式 \(a_n = ar^{n-1}\) と和の公式 \(S_n = \frac{a(r^n - 1)}{r-1}\) を連立して解くことが多いです。末項 \(l\) が与えられている場合は、\(l = ar^{n-1}\) や、和の公式の別形 \(S_n = \frac{rl-a}{r-1}\) (ただし \(r \neq 1\)) を利用することも考えられます。</p>
+              <p><strong>ポイント:</strong> 問題文から与えられている情報（\(a, r, n, S_n, l\) のうちどれか）を整理し、適切な公式に代入して方程式を立てます。</p>
+          </li>
+      </ul>
+    </div>
+
+    <div class="quiz" id="understanding-check-1">
+        ❓ <h4>理解度チェッククイズ 1</h4>
+        <ol>
+            <li>
+                <p>初項 2、公比 3 の等比数列の第4項 \(a_4\) はいくらですか？</p>
+                <ol type="A">
+                    <li>18</li>
+                    <li>54</li>
+                    <li>81</li>
+                    <li>24</li>
+                </ol>
+                <details>
+                    <summary>答えと解説</summary>
+                    <p><strong>答え:</strong> B. 54</p>
+                    <p><strong>解説:</strong> 一般項の公式 \(a_n = ar^{n-1}\) を用います。\(a=2, r=3, n=4\)。</p>
+                    <p>\(a_4 = 2 \cdot 3^{4-1} = 2 \cdot 3^3 = 2 \cdot 27 = 54\)。</p>
+                </details>
+            </li>
+            <li>
+                <p>初項 1、公比 \(\frac{1}{2}\)、項数 3 の等比数列の和 \(S_3\) はいくらですか？</p>
+                <ol type="A">
+                    <li>\(\frac{7}{4}\)</li>
+                    <li>\(\frac{3}{2}\)</li>
+                    <li>\(\frac{7}{8}\)</li>
+                    <li>\(2\)</li>
+                </ol>
+                <details>
+                    <summary>答えと解説</summary>
+                    <p><strong>答え:</strong> A. \(\frac{7}{4}\)</p>
+                    <p><strong>解説:</strong> 和の公式 \(S_n = \frac{a(1-r^n)}{1-r}\) を用います。\(a=1, r=\frac{1}{2}, n=3\)。</p>
+                    <p>\(S_3 = \frac{1(1-(\frac{1}{2})^3)}{1-\frac{1}{2}} = \frac{1-\frac{1}{8}}{\frac{1}{2}} = \frac{\frac{7}{8}}{\frac{1}{2}} = \frac{7}{8} \times 2 = \frac{7}{4}\)。</p>
+                </details>
+            </li>
+        </ol>
+    </div>
+
+    <div class="summary" id="summary-today">
+      🔖 <h3>本日のまとめ</h3>
+      <ul>
+          <li><strong>等比数列の一般項:</strong> \(a_n = ar^{n-1}\) (初項 \(a\), 公比 \(r\))</li>
+          <li><strong>等比数列の和 (\(S_n\)):</strong>
+              <ul>
+                  <li>\(r \neq 1\) のとき: \(S_n = \frac{a(r^n - 1)}{r-1} = \frac{a(1 - r^n)}{1-r}\)</li>
+                  <li>\(r = 1\) のとき: \(S_n = na\)</li>
+              </ul>
+          </li>
+          <li>等比数列の和の公式は、\(S_n\) に \(rS_n\) を掛けて引き算することで導出できます。この導出過程も理解しておくと応用が効きます。</li>
+          <li>公式を利用する際は、初項・公比・項数の値を正確に把握し、特に公比が1の場合に注意することが大切です。</li>
+      </ul>
+    </div>
+
+    <div class="practice-problems" id="standard-practice-problems">
+      ✏️ <h3>標準的な練習問題（追加生成）</h3>
+      <ol>
+          <li>
+              初項が -2、公比が 3 の等比数列の初項から第5項までの和を求めなさい。 <span class="difficulty">★☆☆</span> <span class="importance">★★☆</span>
+              <details>
+                  <summary>解答・解説</summary>
+                  <p>\(a=-2, r=3, n=5\)。\(r>1\) なので、\(S_n = \frac{a(r^n-1)}{r-1}\) を用いる。</p>
+                  <p>\(S_5 = \frac{-2(3^5-1)}{3-1} = \frac{-2(243-1)}{2} = -(242) = -242\)</p>
+                  <p><strong>答え:</strong> -242</p>
+              </details>
+          </li>
+          <li>
+              第2項が 6、第5項が 48 である等比数列の初項 \(a\) と公比 \(r\) を求めなさい。ただし、公比は実数とする。 <span class="difficulty">★★☆</span> <span class="importance">★★★</span>
+              <details>
+                  <summary>解答・解説</summary>
+                  <p>第2項: \(ar = 6 \quad \cdots ①\)</p>
+                  <p>第5項: \(ar^4 = 48 \quad \cdots ②\)</p>
+                  <p>② ÷ ① を行うと（辺々を割る）、\(\frac{ar^4}{ar} = \frac{48}{6}\)</p>
+                  <p>\(r^3 = 8\)</p>
+                  <p>公比 \(r\) は実数なので、\(r=2\)。</p>
+                  <p>これを①に代入すると、\(a \cdot 2 = 6 \Rightarrow a=3\)。</p>
+                  <p><strong>答え:</strong> 初項 \(a=3\), 公比 \(r=2\)</p>
+              </details>
+          </li>
+      </ol>
+    </div>
+
+    <div class="practice-problems" id="advanced-practice-problems">
+      ✏️ <h3>発展的な練習問題（追加生成）</h3>
+      <ol>
+          <li>
+              初項から第3項までの和が 26、初項から第6項までの和が 728 である等比数列の初項と公比を求めなさい。ただし、公比は実数とする。 <span class="difficulty">★★★</span> <span class="importance">★★☆</span>
+              <details>
+                  <summary>解答・解説</summary>
+                  <p>\(S_3 = \frac{a(r^3-1)}{r-1} = 26 \quad \cdots ①\)</p>
+                  <p>\(S_6 = \frac{a(r^6-1)}{r-1} = 728 \quad \cdots ②\)</p>
+                  <p>ここで \(r^6-1 = (r^3-1)(r^3+1)\) であることに注目する。</p>
+                  <p>②を変形すると、\(\frac{a(r^3-1)(r^3+1)}{r-1} = 728\)</p>
+                  <p>これに①を代入すると、\(26(r^3+1) = 728\)</p>
+                  <p>\(r^3+1 = \frac{728}{26} = 28\)</p>
+                  <p>\(r^3 = 27\)</p>
+                  <p>公比 \(r\) は実数なので、\(r=3\)。</p>
+                  <p>これを①に代入すると、\(\frac{a(3^3-1)}{3-1} = 26 \Rightarrow \frac{a(27-1)}{2} = 26 \Rightarrow \frac{26a}{2} = 26 \Rightarrow 13a=26 \Rightarrow a=2\)。</p>
+                  <p><strong>答え:</strong> 初項 \(a=2\), 公比 \(r=3\)</p>
+              </details>
+          </li>
+          <li>
+              公比が正の等比数列で、第2項と第4項の和が 30、第3項と第5項の和が 60 である。この数列の初項、公比、および初項から第 \(n\) 項までの和 \(S_n\) を求めなさい。 <span class="difficulty">★★★</span> <span class="importance">★★★</span>
+              <details>
+                  <summary>解答・解説</summary>
+                  <p>初項を \(a\)、公比を \(r\) (\(r>0\)) とすると、</p>
+                  <p>\(a_2+a_4 = ar+ar^3 = ar(1+r^2) = 30 \quad \cdots ①\)</p>
+                  <p>\(a_3+a_5 = ar^2+ar^4 = ar^2(1+r^2) = 60 \quad \cdots ②\)</p>
+                  <p>② ÷ ① を行うと（ただし \(a \neq 0, r \neq 0, 1+r^2 \neq 0\)）、</p>
+                  <p>\(\frac{ar^2(1+r^2)}{ar(1+r^2)} = \frac{60}{30} \Rightarrow r = 2\)。これは \(r>0\) を満たす。</p>
+                  <p>\(r=2\) を①に代入すると、\(a \cdot 2 (1+2^2) = 30 \Rightarrow 2a(1+4) = 30 \Rightarrow 2a \cdot 5 = 30 \Rightarrow 10a=30 \Rightarrow a=3\)。</p>
+                  <p>初項 \(a=3\)、公比 \(r=2\)。</p>
+                  <p>初項から第 \(n\) 項までの和 \(S_n\) は、</p>
+                  <p>\(S_n = \frac{3(2^n-1)}{2-1} = 3(2^n-1)\)</p>
+                  <p><strong>答え:</strong> 初項 \(3\), 公比 \(2\), \(S_n = 3(2^n-1)\)</p>
+              </details>
+          </li>
+      </ol>
+    </div>
+</body>
+</html>
