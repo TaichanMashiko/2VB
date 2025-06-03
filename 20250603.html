@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シグマ計算と数列の和</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+    <style>
+        /* 基本的なページスタイル */
+        body { font-family: sans-serif; line-height: 1.6; margin: 20px; max-width: 800px; margin-left: auto; margin-right: auto; padding: 0 15px;}
+        h1, h2, h3, h4, h5, h6 { margin-top: 1.5em; margin-bottom: 0.5em; }
+        h1 { border-bottom: 2px solid #005ab3; padding-bottom: 0.3em; } /* 単元名用 */
+        h2 { border-bottom: 1px solid #ccc; padding-bottom: 0.2em; }
+        p { margin-bottom: 1em; }
+        ul, ol { margin-bottom: 1em; padding-left: 2em; }
+        pre { background-color: #f4f4f4; padding: 10px; border: 1px solid #ddd; border-radius: 4px; overflow-x: auto; font-size: 0.95em; white-space: pre-wrap; word-wrap: break-word; }
+        code { font-family: monospace; background-color: #f0f0f0; padding: 0.2em 0.4em; border-radius: 3px; }
+        pre code { background-color: transparent; padding: 0; border-radius: 0; white-space: inherit; }
+        blockquote { border-left: 4px solid #ccc; padding: 0.5em 1em; margin-left: 0; color: #555; background-color: #f9f9f9; }
+        details { margin-bottom: 1em; border: 1px solid #ccc; border-radius: 4px; }
+        summary { font-weight: bold; padding: 0.5em 1em; background-color: #f9f9f9; cursor: pointer; border-radius: 4px 4px 0 0; position: relative; /* アイコン配置用 */ }
+        details[open] > summary { border-bottom: 1px solid #ccc; }
+        details > *:not(summary) { padding: 1em; border-top: 1px solid #eee; overflow-wrap: break-word; word-wrap: break-word; overflow-x: auto; }
+        mjx-container[jax="SVG"], mjx-container[jax="CHTML"] { overflow-x: auto; max-width: 100%; }
+        img { max-width: 100%; height: auto; display: block; margin: 1em auto; border: 1px solid #ddd; padding: 3px; border-radius: 4px;}
+        a { color: #005ab3; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 1em;}
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+
+        /* 各セクションのスタイル */
+        .definition, .theorem, .example, .practice-problems, .tips, .supplement, .important, .caution, .summary, .quiz, .formula-guide {
+            margin-top: 1.5em; margin-bottom: 1.5em; padding: 1em 1.5em; border-radius: 5px; border-left-width: 5px; border-left-style: solid; position: relative; padding-left: 2.5em; /* アイコンスペース確保 */
+        }
+        /* アイコン共通スタイル */
+        .definition::before, .theorem::before, .example::before, .practice-problems::before, .tips::before, .supplement::before, .important::before, .caution::before, .summary::before, .quiz::before, .formula-guide::before {
+            position: absolute; left: 1em; top: 0.9em; /* 位置調整 */ font-size: 1.1em; width: 1.5em; /* アイコン幅 */ text-align: center;
+        }
+        /* 個別アイコン設定 */
+        .definition::before { content: '📖'; }
+        .theorem::before { content: '📜'; }
+        .example::before { content: '✍️'; }
+        .practice-problems::before { content: '✏️'; }
+        .tips::before { content: '💡'; }
+        .supplement::before { content: '➕'; }
+        .important::before { content: '⭐'; }
+        .caution::before { content: '⚠️'; }
+        .summary::before { content: '🔖'; }
+        .quiz::before { content: '❓'; } /* クイズ用アイコン例 */
+        .formula-guide::before { content: '🧭'; } /* ガイド用アイコン例 */
+
+        /* 各セクションの背景色・ボーダー色 */
+        .definition { background-color: #e0f7fa; border-left-color: #00bcd4; }
+        .theorem { background-color: #e8f5e9; border-left-color: #4caf50; }
+        .example { background-color: #fff3e0; border-left-color: #ff9800; }
+        .practice-problems { background-color: #fce4ec; border-left-color: #e91e63; }
+        .tips { background-color: #fffde7; border-left-color: #ffeb3b; }
+        .supplement { background-color: #f3e5f5; border-left-color: #9c27b0; }
+        .important { background-color: #ffebee; border-left-color: #f44336; font-weight: bold; }
+        .caution { background-color: #ffebee; border-left-color: #f44336; }
+        .summary { background-color: #e3f2fd; border-left-color: #2196f3; }
+        .quiz { background-color: #e8eaf6; border-left-color: #3f51b5; }
+        .formula-guide { background-color: #e0f2f1; border-left-color: #009688; }
+
+        /* ツールチップ */
+        .tooltip { position: relative; border-bottom: 1px dotted black; cursor: help; }
+        .tooltip::after { content: attr(data-tooltip); position: absolute; left: 50%; transform: translateX(-50%); bottom: 130%; background-color: rgba(0, 0, 0, 0.85); color: white; padding: 6px 10px; border-radius: 4px; font-size: 0.9em; white-space: nowrap; visibility: hidden; opacity: 0; transition: opacity 0.3s, visibility 0.3s; z-index: 100; pointer-events: none; }
+        .tooltip:hover::after { visibility: visible; opacity: 1; }
+
+        /* 難易度・重要度 */
+        .difficulty, .importance { display: inline-block; font-size: 0.85em; padding: 0.1em 0.5em; margin-left: 0.5em; border-radius: 3px; vertical-align: middle; }
+        .difficulty { background-color: #eee; color: #333; }
+        .importance { background-color: #ffeb3b; color: #5f4c00; } /* 重要度用: 黄色地に濃い文字 */
+
+        /* クイズ用 */
+        .quiz ol { list-style-type: none; padding-left: 0; }
+        .quiz li { margin-bottom: 0.5em; }
+
+        /* 使い分けガイド用 */
+        .formula-guide ul { list-style-type: none; padding-left: 0; }
+        .formula-guide li { margin-bottom: 1em; border-bottom: 1px dashed #ccc; padding-bottom: 1em; }
+        .formula-guide strong { display: block; margin-bottom: 0.5em; font-size: 1.1em; }
+
+        /* 目次トグル用 */
+        .toc-toggle { border: 1px solid #ccc; border-radius: 4px; margin-bottom: 1.5em; background-color: #f9f9f9; }
+        .toc-toggle summary { padding: 0.8em 1em; cursor: pointer; font-weight: bold; background-color: transparent; border-radius: 4px; margin: 0; }
+        details[open].toc-toggle > summary { border-bottom: 1px solid #ccc; border-radius: 4px 4px 0 0; }
+        .toc-toggle summary h2 { display: inline; margin: 0; border: none; padding: 0; font-size: 1.2em; }
+        .toc-toggle nav { padding: 0 1.5em 1em 1.5em; background-color: white; border-radius: 0 0 4px 4px; }
+        .toc-toggle nav h2 { display: none; } /* nav内の目次タイトルは非表示 */
+        .toc-toggle nav ul { padding-left: 1.5em; } /* 目次リストのインデント調整 */
+        .toc-toggle nav ul ul { padding-left: 1.5em; } /* サブリストのインデント */
+
+    </style>
+</head>
+<body>
+    <h1>シグマ計算と数列の和</h1>
+    <h2>授業概要</h2>
+    <p>授業日: 2025年06月03日</p>
+    <p>講師: 講師</p>
+    <p>学習目標: シグマ記号の意味を理解し、基本的なシグマ計算の公式を習得する。</p>
+
+    <details class="toc-toggle">
+        <summary><h2>目次</h2></summary>
+        <nav>
+            <ul>
+                <li><a href="#intro">はじめに</a></li>
+                <li><a href="#sigma-notation">1. シグマ記号（\(\Sigma\)）の導入 📖</a></li>
+                <li><a href="#sigma-examples">2. シグマ記号を用いた和の表現例 ✍️</a></li>
+                <li><a href="#sigma-properties">3. シグマ計算の基本性質 📜</a></li>
+                <li><a href="#sigma-formulas">4. 基本的なシグマ計算の公式 📖</a></li>
+                <li><a href="#practice-problem-1">5. 練習問題 1 ✏️</a></li>
+                <li><a href="#important-points">⭐ 重要ポイント</a></li>
+                <li><a href="#common-mistakes">⚠️ 間違いやすいポイント</a></li>
+                <li><a href="#formula-guide">🧭 シグマ公式の使い分けガイド</a></li>
+                <li><a href="#standard-problems">✏️ 標準的な練習問題</a></li>
+                <li><a href="#advanced-problems">✏️ 発展的な練習問題</a></li>
+                <li><a href="#summary">🔖 授業の要点まとめ</a></li>
+            </ul>
+        </nav>
+    </details>
+
+    <h2 id="intro">はじめに</h2>
+    <p>本日の授業では、教科書24ページから数列の和を表す新しい記号「<span class="tooltip" data-tooltip="ギリシャ文字の一つで、数列の和を表す記号。指定された範囲の項を全て足し合わせることを意味する。">シグマ（\(\Sigma\)）</span>」について学習します。この内容は非常に重要であり、理解が難しい部分でもあるため、集中して聞いてください。</p>
+    <p class="important">⭐ シグマ記号は、理系に進む生徒にとっては特に頻出する内容です。文系であっても、数列の和を簡潔に表現する上で便利な記号なので、しっかりと理解しておきましょう。</p>
+
+    <h2 id="sigma-notation">1. シグマ記号（\(\Sigma\)）の導入 📖 <span class="importance">★★★</span></h2>
+    <p class="definition">
+        数列 \(\{a_n\}\) の初項から第\(n\)項までの和 \(S_n = a_1 + a_2 + a_3 + \dots + a_n\) を、シグマ記号 \(\Sigma\) を用いて次のように表します。
+        \[ S_n = \sum_{k=1}^{n} a_k \]
+        これは「シグマ、ケーが1からエヌまでのエーケー」のように読みます。
+        <ul>
+            <li>\(\Sigma\): 和を表す記号（ギリシャ文字のシグマの大文字）</li>
+            <li>\(k\): 和をとるための変数（<span class="tooltip" data-tooltip="Σ記号で和を取る際に、項の番号を表すために使われる変数。k以外にiやjなどが使われることもある。">添字</span>とも呼ばれます）</li>
+            <li>\(k=1\): \(k\) の最初の値（初項の番号）</li>
+            <li>\(n\): \(k\) の最後の値（末項の番号）</li>
+            <li>\(a_k\): 和をとる数列の第\(k\)項（一般項）</li>
+        </ul>
+        つまり、\(k\) に1から \(n\) までの整数を順に代入し、それらをすべて足し合わせるという意味です。
+    </p>
+    <p class="tips">💡 シグマ記号は、長い和の式を簡潔に表現するための便利なツールです。特に項数が多い場合や、一般項が複雑な場合に有効です。</p>
+
+    <h2 id="sigma-examples">2. シグマ記号を用いた和の表現例 ✍️ <span class="difficulty">★☆☆</span> <span class="importance">★★☆</span></h2>
+    <p>例1: (1) \(\sum_{k=1}^{6} 2k\)</p>
+    <details>
+        <summary>解説</summary>
+        <p>これは、\(a_k = 2k\) という数列の \(k=1\) から \(k=6\) までの和を表します。</p>
+        <p>\(k=1\) のとき: \(2 \times 1 = 2\)<br>
+        \(k=2\) のとき: \(2 \times 2 = 4\)<br>
+        \(k=3\) のとき: \(2 \times 3 = 6\)<br>
+        \(k=4\) のとき: \(2 \times 4 = 8\)<br>
+        \(k=5\) のとき: \(2 \times 5 = 10\)<br>
+        \(k=6\) のとき: \(2 \times 6 = 12\)</p>
+        <p>よって、\(\sum_{k=1}^{6} 2k = 2 + 4 + 6 + 8 + 10 + 12 = 42\)</p>
+    </details>
+
+    <p>(2) \(\sum_{k=1}^{5} 3^k\)</p>
+    <details>
+        <summary>解説</summary>
+        <p>これは、\(a_k = 3^k\) という数列の \(k=1\) から \(k=5\) までの和を表します。</p>
+        <p>\(k=1\) のとき: \(3^1 = 3\)<br>
+        \(k=2\) のとき: \(3^2 = 9\)<br>
+        \(k=3\) のとき: \(3^3 = 27\)<br>
+        \(k=4\) のとき: \(3^4 = 81\)<br>
+        \(k=5\) のとき: \(3^5 = 243\)</p>
+        <p>よって、\(\sum_{k=1}^{5} 3^k = 3 + 9 + 27 + 81 + 243 = 363\)</p>
+    </details>
+
+    <p>(3) \(\sum_{k=1}^{n} (2k-1)\)</p>
+    <details>
+        <summary>解説</summary>
+        <p>これは、\(a_k = 2k-1\) という数列の \(k=1\) から \(k=n\) までの和を表します。</p>
+        <p>\(k=1\) のとき: \(2(1)-1 = 1\)<br>
+        \(k=2\) のとき: \(2(2)-1 = 3\)<br>
+        \(k=3\) のとき: \(2(3)-1 = 5\)<br>
+        \(\dots\)<br>
+        \(k=n\) のとき: \(2n-1\)</p>
+        <p>よって、\(\sum_{k=1}^{n} (2k-1) = 1 + 3 + 5 + \dots + (2n-1)\)<br>
+        これは初項1、公差2の等差数列の和であり、項数は \(n\) 個です。
+        等差数列の和の公式 \(S_n = \frac{n}{2}(初項 + 末項)\) を用いると、
+        \(S_n = \frac{n}{2}(1 + (2n-1)) = \frac{n}{2}(2n) = n^2\)</p>
+        <p class="tips">💡 この例は、奇数の列の和が平方数になることを示しています。</p>
+    </details>
+
+    <div class="quiz">
+        <h4>理解度チェッククイズ ❓ <span class="importance">★☆☆</span></h4>
+        <ol>
+            <li>\(\sum_{k=1}^{3} k^2\) の値を求めなさい。
+                <ol type="a">
+                    <li>6</li>
+                    <li>9</li>
+                    <li>14</li>
+                </ol>
+                <details>
+                    <summary>解答と解説</summary>
+                    <p><strong>解答: c. 14</strong></p>
+                    <p>解説: \(k=1\) のとき \(1^2=1\)、\(k=2\) のとき \(2^2=4\)、\(k=3\) のとき \(3^2=9\)。これらの和は \(1+4+9 = 14\) です。</p>
+                </details>
+            </li>
+        </ol>
+    </div>
+
+    <h2 id="sigma-properties">3. シグマ計算の基本性質 📜 <span class="importance">★★★</span></h2>
+    <p class="theorem">
+        \(\Sigma\) の計算には、以下の性質があります。（\(c\) は \(k\) によらない定数）
+        <ol>
+            <li>\(\sum_{k=1}^{n} (a_k + b_k) = \sum_{k=1}^{n} a_k + \sum_{k=1}^{n} b_k\)</li>
+            <li>\(\sum_{k=1}^{n} (a_k - b_k) = \sum_{k=1}^{n} a_k - \sum_{k=1}^{n} b_k\)</li>
+            <li>\(\sum_{k=1}^{n} c a_k = c \sum_{k=1}^{n} a_k\) （定数は \(\Sigma\) の前に出せる）</li>
+            <li>\(\sum_{k=1}^{n} c = nc\) （定数 \(c\) を \(n\) 回足す）</li>
+        </ol>
+    </p>
+    <p class="caution">⚠️ 注意: \(\sum_{k=1}^{n} (a_k \cdot b_k) \neq (\sum_{k=1}^{n} a_k) \cdot (\sum_{k=1}^{n} b_k)\) です。積のシグマは、シグマの積にはなりません。</p>
+
+    <h2 id="sigma-formulas">4. 基本的なシグマ計算の公式 📖 <span class="importance">★★★</span></h2>
+    <p>以下の公式は非常に重要なので、必ず覚えて使えるようにしましょう。</p>
+    <p class="definition">
+        <ol>
+            <li>\(\sum_{k=1}^{n} k = 1 + 2 + 3 + \dots + n = \frac{1}{2}n(n+1)\) （自然数の和）</li>
+            <li>\(\sum_{k=1}^{n} k^2 = 1^2 + 2^2 + 3^2 + \dots + n^2 = \frac{1}{6}n(n+1)(2n+1)\) （平方数の和）</li>
+            <li>\(\sum_{k=1}^{n} k^3 = 1^3 + 2^3 + 3^3 + \dots + n^3 = \left\{ \frac{1}{2}n(n+1) \right\}^2\) （立方数の和）</li>
+        </ol>
+    </p>
+    <p class="tips">💡 覚え方: 立方数の和の公式は、自然数の和の公式を2乗したものになっています。</p>
+
+    <h2 id="practice-problem-1">5. 練習問題 1 ✏️ <span class="difficulty">★★☆</span> <span class="importance">★★★</span></h2>
+    <p>教科書25ページ、例の4番: \(\sum_{k=1}^{n} (3k^2 - k + 4)\) を計算しなさい。</p>
+    <details>
+        <summary>解説</summary>
+        <p>シグマの性質を使って、各項に分解します。<br>
+        \[ \sum_{k=1}^{n} (3k^2 - k + 4) = \sum_{k=1}^{n} 3k^2 - \sum_{k=1}^{n} k + \sum_{k=1}^{n} 4 \]
+        定数を前に出すと、<br>
+        \[ = 3\sum_{k=1}^{n} k^2 - \sum_{k=1}^{n} k + \sum_{k=1}^{n} 4 \]
+        公式を適用します。<br>
+        \[ = 3 \cdot \frac{1}{6}n(n+1)(2n+1) - \frac{1}{2}n(n+1) + 4n \]
+        \[ = \frac{1}{2}n(n+1)(2n+1) - \frac{1}{2}n(n+1) + 4n \]
+        共通因数 \(\frac{1}{2}n(n+1)\) でくくると、<br>
+        \[ = \frac{1}{2}n(n+1)\{(2n+1) - 1\} + 4n \]
+        \[ = \frac{1}{2}n(n+1)(2n) + 4n \]
+        \[ = n^2(n+1) + 4n \]
+        さらに共通因数 \(n\) でくくると、<br>
+        \[ = n\{n(n+1) + 4\} \]
+        \[ = n(n^2 + n + 4) \]
+        <p class="important">⭐ 答え: \(n(n^2 + n + 4)\)</p>
+    </details>
+
+    <div class="important" id="important-points">
+        <h3>⭐ 重要ポイント <span class="importance">★★★</span></h3>
+        <ul>
+            <li><strong>シグマ記号の定義の理解:</strong> \( \sum_{k=m}^{n} a_k \) は、\(a_m + a_{m+1} + \dots + a_n\) を意味します。開始の添字と終了の添字、そして一般項 \(a_k\) を正確に把握することが基本です。</li>
+            <li><strong>基本公式の暗記と適用:</strong> \(k, k^2, k^3\) の和の公式は頻繁に使うため、正確に記憶し、適切な場面で使えるように練習が必要です。</li>
+            <li><strong>シグマの線形性:</strong> 和や差、定数倍を分離できる性質（線形性）は、複雑な式の計算を簡単にするために不可欠です。</li>
+            <li><strong>共通因数での整理:</strong> シグマ計算の結果は、多項式になることが多いです。計算の最後には、共通因数でくくって式を簡潔に整理するよう心がけましょう。これにより、検算や次の計算が楽になります。</li>
+        </ul>
+    </div>
+
+    <div class="caution" id="common-mistakes">
+        <h3>⚠️ 間違いやすいポイント <span class="importance">★★☆</span></h3>
+        <ul>
+            <li><strong>公式の誤用:</strong> 特に \(k^2\) の公式 \(\frac{1}{6}n(n+1)(2n+1)\) は複雑なため、項を間違えたり、係数を忘れたりしやすいです。繰り返し練習して確実に覚えましょう。</li>
+            <li><strong>定数の扱い:</strong> \(\sum_{k=1}^{n} c = nc\) となるところを、単に \(c\) と書いてしまうミスがあります。定数 \(c\) を \(n\) 回足すという意味を理解しましょう。</li>
+            <li><strong>添字の範囲:</strong> シグマの添字 \(k\) が1から始まらない場合（例: \(\sum_{k=3}^{n}\)）、公式を直接適用できません。範囲を調整する（例: \(\sum_{k=1}^{n} - \sum_{k=1}^{2}\)）か、定義に戻って計算する必要があります。</li>
+            <li><strong>計算ミス:</strong> 展開や因数分解、通分などの代数計算のミスは、シグマ計算でも頻繁に起こります。丁寧に計算を進めることが重要です。</li>
+            <li><strong>積のシグマの誤解:</strong> \(\sum (a_k \cdot b_k)\) を \((\sum a_k) \cdot (\sum b_k)\) と誤って計算しないように注意が必要です。積のシグマには簡単な公式はありません。</li>
+        </ul>
+    </div>
+
+    <div class="formula-guide" id="formula-guide">
+        <h3>🧭 シグマ公式の使い分けガイド <span class="importance">★★★</span></h3>
+        <p>シグマ計算では、与えられた数列の一般項の形に応じて適切な公式を選択する必要があります。</p>
+        <ul>
+            <li>
+                <strong>一般項が \(k\) の1次式 (例: \(ak+b\)) の場合:</strong>
+                <p>\(\sum_{k=1}^{n} (ak+b) = a \sum_{k=1}^{n} k + \sum_{k=1}^{n} b\)<br>
+                ここで、\(\sum_{k=1}^{n} k = \frac{1}{2}n(n+1)\) と \(\sum_{k=1}^{n} b = nb\) を使います。</p>
+            </li>
+            <li>
+                <strong>一般項が \(k\) の2次式 (例: \(ak^2+bk+c\)) の場合:</strong>
+                <p>\(\sum_{k=1}^{n} (ak^2+bk+c) = a \sum_{k=1}^{n} k^2 + b \sum_{k=1}^{n} k + \sum_{k=1}^{n} c\)<br>
+                ここで、\(\sum_{k=1}^{n} k^2 = \frac{1}{6}n(n+1)(2n+1)\)、\(\sum_{k=1}^{n} k = \frac{1}{2}n(n+1)\)、\(\sum_{k=1}^{n} c = nc\) を使います。</p>
+            </li>
+            <li>
+                <strong>一般項が \(k\) の3次式 (例: \(ak^3+bk^2+ck+d\)) の場合:</strong>
+                <p>\(\sum_{k=1}^{n} (ak^3+bk^2+ck+d) = a \sum_{k=1}^{n} k^3 + b \sum_{k=1}^{n} k^2 + c \sum_{k=1}^{n} k + \sum_{k=1}^{n} d\)<br>
+                ここで、\(\sum_{k=1}^{n} k^3 = \{\frac{1}{2}n(n+1)\}^2\) と上記の公式を使います。</p>
+            </li>
+            <li>
+                <strong>一般項が等比数列 (例: \(ar^{k-1}\)) の場合:</strong>
+                <p>\(\sum_{k=1}^{n} ar^{k-1}\) は、初項 \(a\)、公比 \(r\)、項数 \(n\) の等比数列の和です。<br>
+                等比数列の和の公式 \(S_n = \frac{a(r^n-1)}{r-1}\) (ただし \(r \neq 1\)) を使います。<br>
+                もし \(r=1\) ならば、\(\sum_{k=1}^{n} a = na\) となります。</p>
+            </li>
+            <li>
+                <strong>一般項が定数 (例: \(c\)) の場合:</strong>
+                <p>\(\sum_{k=1}^{n} c = c + c + \dots + c\) (\(n\)個の \(c\) の和) \( = nc\)</p>
+            </li>
+        </ul>
+        <p class="tips">💡 まずはシグマの性質を使って各項に分解し、それぞれの項がどの公式に当てはまるかを見極めることが大切です。</p>
+    </div>
+
+    <div class="practice-problems" id="standard-problems">
+        <h3>✏️ 標準的な練習問題 <span class="importance">★★☆</span></h3>
+        <h4>問題 1 <span class="difficulty">★☆☆</span></h4>
+        <p>次の和を求めなさい。<br>
+        \(\sum_{k=1}^{n} (4k - 3)\)</p>
+        <details>
+            <summary>解答と解説</summary>
+            <p>\[ \sum_{k=1}^{n} (4k - 3) = 4\sum_{k=1}^{n} k - \sum_{k=1}^{n} 3 \]</p>
+            <p>\[ = 4 \cdot \frac{1}{2}n(n+1) - 3n \]</p>
+            <p>\[ = 2n(n+1) - 3n \]</p>
+            <p>\[ = 2n^2 + 2n - 3n \]</p>
+            <p>\[ = 2n^2 - n \]</p>
+            <p>\[ = n(2n - 1) \]</p>
+            <p class="important">⭐ 答え: \(n(2n - 1)\)</p>
+        </details>
+
+        <h4>問題 2 <span class="difficulty">★★☆</span></h4>
+        <p>次の和を求めなさい。<br>
+        \(\sum_{k=1}^{n} (k^2 + k + 1)\)</p>
+        <details>
+            <summary>解答と解説</summary>
+            <p>\[ \sum_{k=1}^{n} (k^2 + k + 1) = \sum_{k=1}^{n} k^2 + \sum_{k=1}^{n} k + \sum_{k=1}^{n} 1 \]</p>
+            <p>\[ = \frac{1}{6}n(n+1)(2n+1) + \frac{1}{2}n(n+1) + n \]</p>
+            <p>共通因数 \(\frac{1}{6}n\) でくくると考え、まず通分します。<br>
+            \(\frac{1}{2}n(n+1) = \frac{3}{6}n(n+1)\)<br>
+            \(n = \frac{6}{6}n\)</p>
+            <p>\[ = \frac{1}{6}n(n+1)(2n+1) + \frac{3}{6}n(n+1) + \frac{6}{6}n \]</p>
+            <p>\[ = \frac{1}{6}n \{ (n+1)(2n+1) + 3(n+1) + 6 \} \]</p>
+            <p>\[ = \frac{1}{6}n \{ (2n^2 + 3n + 1) + (3n + 3) + 6 \} \]</p>
+            <p>\[ = \frac{1}{6}n (2n^2 + 6n + 10) \]</p>
+            <p>\[ = \frac{1}{3}n (n^2 + 3n + 5) \]</p>
+            <p class="important">⭐ 答え: \(\frac{1}{3}n (n^2 + 3n + 5)\)</p>
+        </details>
+    </div>
+
+    <div class="practice-problems" id="advanced-problems">
+        <h3>✏️ 発展的な練習問題 <span class="importance">★★★</span></h3>
+        <h4>問題 1 <span class="difficulty">★★★</span></h4>
+        <p>次の和 \(S\) を求めなさい。<br>
+        \(S = 1 \cdot 2 + 2 \cdot 3 + 3 \cdot 4 + \dots + n(n+1)\)</p>
+        <details>
+            <summary>解答と解説</summary>
+            <p>この数列の第 \(k\) 項は \(a_k = k(k+1) = k^2 + k\) と表せます。</p>
+            <p>したがって、求める和 \(S\) はシグマ記号を使って次のように書けます。<br>
+            \[ S = \sum_{k=1}^{n} (k^2 + k) \]</p>
+            <p>シグマの性質より、<br>
+            \[ S = \sum_{k=1}^{n} k^2 + \sum_{k=1}^{n} k \]</p>
+            <p>公式を適用すると、<br>
+            \[ S = \frac{1}{6}n(n+1)(2n+1) + \frac{1}{2}n(n+1) \]</p>
+            <p>共通因数 \(\frac{1}{6}n(n+1)\) でくくります。（\(\frac{1}{2} = \frac{3}{6}\)）<br>
+            \[ S = \frac{1}{6}n(n+1) \{ (2n+1) + 3 \} \]</p>
+            <p>\[ S = \frac{1}{6}n(n+1)(2n+4) \]</p>
+            <p>\((2n+4)\) から共通因数2を出すと、<br>
+            \[ S = \frac{1}{6}n(n+1) \cdot 2(n+2) \]</p>
+            <p>\[ S = \frac{1}{3}n(n+1)(n+2) \]</p>
+            <p class="important">⭐ 答え: \(\frac{1}{3}n(n+1)(n+2)\)</p>
+        </details>
+    </div>
+
+    <div class="summary" id="summary">
+        <h2>🔖 授業の要点まとめ <span class="importance">★★★</span></h2>
+        <ul>
+            <li>シグマ記号 \(\sum_{k=1}^{n} a_k\) は、数列 \(\{a_k\}\) の初項から第\(n\)項までの和を表します。</li>
+            <li>シグマ計算の基本性質（和・差の分離、定数倍の分離、定数の和）を理解し活用することが重要です。</li>
+            <li>基本的なシグマ計算の公式（\(k, k^2, k^3\) の和）は必ず暗記し、正確に適用できるようにします。</li>
+            <li>複雑な式の和を求める場合、まず一般項を \(k\) の式で表し、シグマ記号と公式を使って計算します。</li>
+            <li>計算結果は、共通因数でくくるなどして、できるだけ簡潔な形で表すことが望ましいです。</li>
+        </ul>
+    </div>
+
+</body>
+</html>
